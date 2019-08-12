@@ -1,10 +1,14 @@
 import 'package:chewie/chewie.dart';
 import 'package:chewie/src/chewie_player.dart';
+import 'package:chewie_example/menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'custom_controls.dart';
+import 'package:flutter/services.dart';
 
-void main() {
+Future main() async {
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
     ChewieDemo(),
   );
@@ -26,33 +30,22 @@ class _ChewieDemoState extends State<ChewieDemo> {
   VideoPlayerController _videoPlayerController1;
   VideoPlayerController _videoPlayerController2;
   ChewieController _chewieController;
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
     _videoPlayerController1 = VideoPlayerController.network(
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4');
+        'http://devimages.apple.com/iphone/samples/bipbop/bipbopall.m3u8');
     _videoPlayerController2 = VideoPlayerController.network(
         'https://www.sample-videos.com/video123/mp4/480/asdasdas.mp4');
     _chewieController = ChewieController(
-      videoPlayerController: _videoPlayerController1,
-      aspectRatio: 3 / 2,
-      autoPlay: true,
-      looping: true,
-      // Try playing around with some of these other options:
-
-      // showControls: false,
-      // materialProgressColors: ChewieProgressColors(
-      //   playedColor: Colors.red,
-      //   handleColor: Colors.blue,
-      //   backgroundColor: Colors.grey,
-      //   bufferedColor: Colors.lightGreen,
-      // ),
-      // placeholder: Container(
-      //   color: Colors.grey,
-      // ),
-      // autoInitialize: true,
-    );
+        videoPlayerController: _videoPlayerController1,
+        aspectRatio: 3 / 2,
+        autoPlay: false,
+        autoInitialize: true,
+        looping: true,
+        customControls: customControl);
   }
 
   @override
@@ -67,21 +60,19 @@ class _ChewieDemoState extends State<ChewieDemo> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: widget.title,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
         platform: _platform ?? Theme.of(context).platform,
       ),
       home: Scaffold(
+        key: scaffoldKey,
         appBar: AppBar(
           title: Text(widget.title),
         ),
         body: Column(
           children: <Widget>[
-            Expanded(
-              child: Center(
-                child: Chewie(
-                  controller: _chewieController,
-                ),
-              ),
+            Chewie(
+              controller: _chewieController,
             ),
             FlatButton(
               onPressed: () {
@@ -164,6 +155,19 @@ class _ChewieDemoState extends State<ChewieDemo> {
                   ),
                 )
               ],
+            ),
+            Row(
+              children: <Widget>[
+                FlatButton(
+                  child: Text(
+                    '我是考试大纲啊   定位到1分钟',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                  onPressed: () {
+                    _chewieController.seekTo(Duration(seconds: 1));
+                  },
+                )
+              ],
             )
           ],
         ),
@@ -171,3 +175,55 @@ class _ChewieDemoState extends State<ChewieDemo> {
     );
   }
 }
+
+class MoreActionWidget extends StatefulWidget {
+  @override
+  _MoreActionWidgetState createState() => _MoreActionWidgetState();
+}
+
+class _MoreActionWidgetState extends State<MoreActionWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          flex: 1,
+          child: Container(),
+        ),
+        Expanded(
+          flex: 1,
+          child: Container(
+            color: Colors.black54,
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    FlatButton.icon(
+                        onPressed: null,
+                        icon: Icon(
+                          Icons.cached,
+                          color: Colors.white,
+                        ),
+                        label: Text(
+                          '缓存',
+                          style: TextStyle(color: Colors.white),
+                        )),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+var customControl = CustomControls(
+    videoTitle: '我是测试视频啊',
+    onPressMoreAction: (context) {
+      Navigator.of(context)
+          .push(MenuPopRoute<Widget>(pageBuilder: (context, animation, secondaryAnimation) {
+        return MoreActionWidget();
+      }));
+    });
