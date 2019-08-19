@@ -35,8 +35,8 @@ class _ChewieDemoState extends State<ChewieDemo> {
   @override
   void initState() {
     super.initState();
-    _videoPlayerController1 = VideoPlayerController.network(
-        'http://devimages.apple.com/iphone/samples/bipbop/bipbopall.m3u8');
+    _videoPlayerController1 =
+        VideoPlayerController.network('http://res.uquabc.com/HLS_Apple/all.m3u8');
     _videoPlayerController2 = VideoPlayerController.network(
         'https://www.sample-videos.com/video123/mp4/480/asdasdas.mp4');
     _chewieController = ChewieController(
@@ -45,7 +45,14 @@ class _ChewieDemoState extends State<ChewieDemo> {
         autoPlay: false,
         autoInitialize: true,
         looping: true,
-        customControls: customControl);
+        customControls: CustomControls(
+            videoTitle: '我是测试视频啊',
+            onPressMoreAction: (context) {
+              Navigator.of(context)
+                  .push(MenuPopRoute<Widget>(pageBuilder: (context, animation, secondaryAnimation) {
+                return MoreActionWidget(_chewieController);
+              }));
+            }));
   }
 
   @override
@@ -164,7 +171,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
                     style: TextStyle(color: Colors.blue),
                   ),
                   onPressed: () {
-                    _chewieController.seekTo(Duration(seconds: 1));
+                    _chewieController.seekTo(Duration(minutes: 1));
                   },
                 )
               ],
@@ -177,11 +184,38 @@ class _ChewieDemoState extends State<ChewieDemo> {
 }
 
 class MoreActionWidget extends StatefulWidget {
+  final ChewieController _chewieController;
+
+  const MoreActionWidget(this._chewieController);
+
   @override
   _MoreActionWidgetState createState() => _MoreActionWidgetState();
 }
 
 class _MoreActionWidgetState extends State<MoreActionWidget> {
+  var resolutionsWidget = <Widget>[];
+
+  @override
+  void initState() {
+    super.initState();
+    if (resolutionsWidget.isEmpty) {
+      widget._chewieController.videoPlayerController.getResolutions().then((value) {
+        value.entries.forEach((entry) {
+          resolutionsWidget.add(FlatButton(
+            child: Text(
+              entry.value,
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () {
+              widget._chewieController.videoPlayerController.switchResolutions(entry.key);
+            },
+          ));
+        });
+        setState(() {});
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -210,6 +244,10 @@ class _MoreActionWidgetState extends State<MoreActionWidget> {
                         )),
                   ],
                 ),
+                Text('分辨率：'),
+                Column(
+                  children: resolutionsWidget,
+                ),
               ],
             ),
           ),
@@ -218,12 +256,3 @@ class _MoreActionWidgetState extends State<MoreActionWidget> {
     );
   }
 }
-
-var customControl = CustomControls(
-    videoTitle: '我是测试视频啊',
-    onPressMoreAction: (context) {
-      Navigator.of(context)
-          .push(MenuPopRoute<Widget>(pageBuilder: (context, animation, secondaryAnimation) {
-        return MoreActionWidget();
-      }));
-    });
