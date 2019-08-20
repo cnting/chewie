@@ -198,22 +198,22 @@ class _MoreActionWidgetState extends State<MoreActionWidget> {
   @override
   void initState() {
     super.initState();
-    if (resolutionsWidget.isEmpty) {
-      widget._chewieController.videoPlayerController.getResolutions().then((value) {
-        value.entries.forEach((entry) {
-          resolutionsWidget.add(FlatButton(
-            child: Text(
-              entry.value,
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () {
-              widget._chewieController.videoPlayerController.switchResolutions(entry.key);
-            },
-          ));
-        });
-        setState(() {});
-      });
-    }
+//    if (resolutionsWidget.isEmpty) {
+//      widget._chewieController.videoPlayerController.getResolutions().then((value) {
+//        value.entries.forEach((entry) {
+//          resolutionsWidget.add(FlatButton(
+//            child: Text(
+//              entry.value,
+//              style: TextStyle(color: Colors.white),
+//            ),
+//            onPressed: () {
+//              widget._chewieController.videoPlayerController.switchResolutions(entry.key);
+//            },
+//          ));
+//        });
+//        setState(() {});
+//      });
+//    }
   }
 
   @override
