@@ -11,11 +11,10 @@ environment:
 
 dependencies:
   open_iconic_flutter: ">=0.3.0 <0.4.0"
-  video_player: ^0.10.1+6
-#  video_player:
-#    path: /Users/cnting/Documents/workspace_flutter/video_player
-#    git:
-#      url: https://github.com/cnting/video_player.git
+#  video_player: ^0.10.1+6
+  video_player:
+    git:
+      url: https://github.com/uquabc/video_player.git
   screen: ">=0.0.4 <0.1.0"
   flutter:
     sdk: flutter
