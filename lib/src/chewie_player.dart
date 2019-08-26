@@ -118,9 +118,11 @@ class ChewieState extends State<Chewie> {
       pageBuilder: _fullScreenRoutePageBuilder,
     );
 
+    print('===>_pushFullScreenWidget(),isAndroid:$isAndroid');
+
     SystemChrome.setEnabledSystemUIOverlays([]);
     if (isAndroid) {
-      SystemChrome.setPreferredOrientations([
+      await SystemChrome.setPreferredOrientations([
         DeviceOrientation.landscapeLeft,
         DeviceOrientation.landscapeRight,
       ]);
@@ -293,7 +295,7 @@ class ChewieController extends ChangeNotifier {
       await videoPlayerController.play();
     }
 
-    if (startAt != null) {
+    if (videoPlayerController.value.initialized && startAt != null) {
       await videoPlayerController.seekTo(startAt);
     }
 

@@ -43,7 +43,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
         videoPlayerController: _videoPlayerController1,
         aspectRatio: 3 / 2,
         autoPlay: false,
-        autoInitialize: true,
+        autoInitialize: false,
         looping: true,
         customControls: CustomControls(
             videoTitle: '我是测试视频啊',
