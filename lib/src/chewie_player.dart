@@ -141,12 +141,11 @@ class ChewieState extends State<Chewie> {
     if (!widget.controller.allowedScreenSleep) {
       Screen.keepOn(true);
     }
-
+    await Navigator.of(context).push(route);
     if (!Platform.isIOS) {
-      await Navigator.of(context).push(route);
+      widget.controller.exitFullScreen();
     }
     _isFullScreen = false;
-    widget.controller.exitFullScreen();
 
     bool isKeptOn = await Screen.isKeptOn;
     if (isKeptOn) {
@@ -346,13 +345,11 @@ class ChewieController extends ChangeNotifier {
 
   Future<void> _changeScreenOrientation(bool isFullScreen) async {
     if (_isFullScreen) {
-//      print('>>>>>>>>>>>>全屏显示');
       if (Platform.isIOS) {
         await videoPlayerController
             .changeScreenOrientation(DeviceOrientation.landscapeLeft);
       }
     } else {
-//      print('>>>>>>>>>>>>退出全屏');
       if (Platform.isIOS) {
         await videoPlayerController
             .changeScreenOrientation(DeviceOrientation.portraitUp);
