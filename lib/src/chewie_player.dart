@@ -124,13 +124,13 @@ class ChewieState extends State<Chewie> {
         DeviceOrientation.landscapeLeft,
         DeviceOrientation.landscapeRight,
       ]);
+    } else {
+      await _changeScreenOrientationForiOS(_isFullScreen);
     }
 
     await Navigator.of(context).push(route);
 
-    if (!Platform.isIOS) {
-      widget.controller.exitFullScreen();
-    }
+    widget.controller.exitFullScreen();
     _isFullScreen = false;
 
     SystemChrome.setEnabledSystemUIOverlays(widget.controller.systemOverlaysAfterFullScreen);
@@ -143,8 +143,24 @@ class ChewieState extends State<Chewie> {
       await SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
       ]);
+    } else {
+      await _changeScreenOrientationForiOS(false);
     }
     Navigator.of(context).pop();
+  }
+
+  Future<void> _changeScreenOrientationForiOS(bool isFullScreen) async {
+    if (_isFullScreen) {
+      if (Platform.isIOS) {
+        await widget.controller.videoPlayerController
+            .changeScreenOrientation(DeviceOrientation.landscapeLeft);
+      }
+    } else {
+      if (Platform.isIOS) {
+        await widget.controller.videoPlayerController
+            .changeScreenOrientation(DeviceOrientation.portraitUp);
+      }
+    }
   }
 }
 
@@ -315,20 +331,7 @@ class ChewieController extends ChangeNotifier {
 
   void toggleFullScreen() {
     _isFullScreen = !_isFullScreen;
-    _changeScreenOrientation(_isFullScreen);
     notifyListeners();
-  }
-
-  Future<void> _changeScreenOrientation(bool isFullScreen) async {
-    if (_isFullScreen) {
-      if (Platform.isIOS) {
-        await videoPlayerController.changeScreenOrientation(DeviceOrientation.landscapeLeft);
-      }
-    } else {
-      if (Platform.isIOS) {
-        await videoPlayerController.changeScreenOrientation(DeviceOrientation.portraitUp);
-      }
-    }
   }
 
   Future<void> play() async {
