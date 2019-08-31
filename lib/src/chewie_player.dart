@@ -6,7 +6,6 @@ import 'package:chewie/src/player_with_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:screen/screen.dart';
 import 'package:video_player/video_player.dart';
 
 typedef Widget ChewieRoutePageBuilder(BuildContext context, Animation<double> animation,
@@ -127,21 +126,12 @@ class ChewieState extends State<Chewie> {
       ]);
     }
 
-    if (!widget.controller.allowedScreenSleep) {
-      Screen.keepOn(true);
-    }
-
     await Navigator.of(context).push(route);
 
     if (!Platform.isIOS) {
       widget.controller.exitFullScreen();
     }
     _isFullScreen = false;
-
-    bool isKeptOn = await Screen.isKeptOn;
-    if (isKeptOn) {
-      Screen.keepOn(false);
-    }
 
     SystemChrome.setEnabledSystemUIOverlays(widget.controller.systemOverlaysAfterFullScreen);
     SystemChrome.setPreferredOrientations(widget.controller.deviceOrientationsAfterFullScreen);
