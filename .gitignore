@@ -8,6 +8,6 @@ build/
 ios/.generated/
 packages
 pubspec.lock
-.iml
+*.iml
 Podfile.lock
 chewie.iml
