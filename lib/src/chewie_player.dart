@@ -109,7 +109,13 @@ class ChewieState extends State<Chewie> {
   ) {
     var controllerProvider = _ChewieControllerProvider(
       controller: widget.controller,
-      child: PlayerWithControls(),
+      child: WillPopScope(
+        child: PlayerWithControls(),
+        onWillPop: () {
+          widget.controller.exitFullScreen();
+          return Future.value(false);
+        },
+      ),
     );
 
     if (widget.controller.routePageBuilder == null) {
