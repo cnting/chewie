@@ -22,8 +22,7 @@ class Chewie extends StatefulWidget {
   Chewie({
     Key? key,
     required this.controller,
-  })  : assert(controller != null, 'You must provide a chewie controller'),
-        super(key: key);
+  })  : super(key: key);
 
   /// The [ChewieController]
   final ChewieController controller;
@@ -379,9 +378,7 @@ class _ChewieControllerProvider extends InheritedWidget {
     Key? key,
     required this.controller,
     required Widget child,
-  })  : assert(controller != null),
-        assert(child != null),
-        super(key: key, child: child);
+  })  : super(key: key, child: child);
 
   final ChewieController controller;
 

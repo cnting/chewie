@@ -35,21 +35,21 @@ class _ChewieDemoState extends State<ChewieDemo> {
   @override
   void initState() {
     super.initState();
-    _videoPlayerController1 =
-        VideoPlayerController.network('http://res.uquabc.com/HLS_Apple/all.m3u8');
+    _videoPlayerController1 = VideoPlayerController.network(
+        'https://storage.googleapis.com/shaka-demo-assets/angel-one-hls/hls.m3u8');
     _videoPlayerController2 = VideoPlayerController.network(
-        'https://www.sample-videos.com/video123/mp4/480/asdasdas.mp4');
+        'http://res.uquabc.com/Butterfly-209.mp4');
     _chewieController = ChewieController(
         videoPlayerController: _videoPlayerController1,
         aspectRatio: 3 / 2,
         autoPlay: false,
-        autoInitialize: false,
+        autoInitialize: true,
         looping: true,
         customControls: CustomControls(
             videoTitle: '我是测试视频啊',
             onPressMoreAction: (context) {
-              Navigator.of(context)
-                  .push(MenuPopRoute<Widget>(pageBuilder: (context, animation, secondaryAnimation) {
+              Navigator.of(context).push(MenuPopRoute<Widget>(
+                  pageBuilder: (context, animation, secondaryAnimation) {
                 return MoreActionWidget(_chewieController);
               }));
             }));
@@ -97,7 +97,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
                         _videoPlayerController2.pause();
                         _videoPlayerController2.seekTo(Duration(seconds: 0));
                         _chewieController = ChewieController(
-                          videoPlayerController: _videoPlayerController1,
+                          videoPlayerController: _videoPlayerController2,
                           aspectRatio: 3 / 2,
                           autoPlay: true,
                           looping: true,
@@ -105,7 +105,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
                       });
                     },
                     child: Padding(
-                      child: Text("Video 1"),
+                      child: Text("切换到video2"),
                       padding: EdgeInsets.symmetric(vertical: 16.0),
                     ),
                   ),
@@ -118,7 +118,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
                         _videoPlayerController1.pause();
                         _videoPlayerController1.seekTo(Duration(seconds: 0));
                         _chewieController = ChewieController(
-                          videoPlayerController: _videoPlayerController2,
+                          videoPlayerController: _videoPlayerController1,
                           aspectRatio: 3 / 2,
                           autoPlay: true,
                           looping: true,
@@ -127,7 +127,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 16.0),
-                      child: Text("Error Video"),
+                      child: Text("切换到video1"),
                     ),
                   ),
                 )
@@ -198,22 +198,21 @@ class _MoreActionWidgetState extends State<MoreActionWidget> {
   @override
   void initState() {
     super.initState();
-//    if (resolutionsWidget.isEmpty) {
-//      widget._chewieController.videoPlayerController.getResolutions().then((value) {
-//        value.entries.forEach((entry) {
-//          resolutionsWidget.add(FlatButton(
-//            child: Text(
-//              entry.value,
-//              style: TextStyle(color: Colors.white),
-//            ),
-//            onPressed: () {
-//              widget._chewieController.videoPlayerController.switchResolutions(entry.key);
-//            },
-//          ));
-//        });
-//        setState(() {});
-//      });
-//    }
+    if (resolutionsWidget.isEmpty) {
+      widget._chewieController.videoPlayerController.value.resolutions?.entries
+          .forEach((entry) {
+        resolutionsWidget.add(FlatButton(
+          child: Text(
+            entry.value,
+            style: TextStyle(color: Colors.white),
+          ),
+          onPressed: () {
+            widget._chewieController.videoPlayerController
+                .switchResolutions(entry.key);
+          },
+        ));
+      });
+    }
   }
 
   @override

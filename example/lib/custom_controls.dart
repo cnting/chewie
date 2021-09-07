@@ -117,7 +117,7 @@ class _CustomControlsState extends State<CustomControls> {
             ),
             if (chewieController?.isFullScreen == true)
               IconButton(
-                  icon: Icon(Icons.more_vert),
+                  icon: Icon(Icons.more_vert,color: Colors.red,),
                   onPressed: () {
                     widget.onPressMoreAction?.call(context);
                   })

@@ -11,10 +11,9 @@ environment:
 
 dependencies:
   video_player:
-    path: /Users/cnting/Documents/workspace_flutter/video_player
-#    git:
-#      url: https://github.com/uquabc/video_player.git
-#      ref: 'null-safety'
+    git:
+      url: https://github.com/uquabc/video_player.git
+      ref: 'null-safety'
   flutter:
     sdk: flutter
 
