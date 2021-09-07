@@ -5,20 +5,18 @@ import 'package:flutter/material.dart';
 
 class MenuPopRoute<T> extends PopupRoute<T> {
   MenuPopRoute({
-    @required RoutePageBuilder pageBuilder,
+    required RoutePageBuilder pageBuilder,
     bool barrierDismissible = true,
-    String barrierLabel,
+    String? barrierLabel,
     Color barrierColor = const Color(0x80000000),
     Duration transitionDuration = const Duration(milliseconds: 200),
-    RouteTransitionsBuilder transitionBuilder,
-    RouteSettings settings,
-  })  : assert(barrierDismissible != null),
-        _pageBuilder = pageBuilder,
+    this.transitionBuilder,
+    RouteSettings? settings,
+  })  : _pageBuilder = pageBuilder,
         _barrierDismissible = barrierDismissible,
-        _barrierLabel = barrierLabel,
+        _barrierLabel = barrierLabel ?? "",
         _barrierColor = barrierColor,
         _transitionDuration = transitionDuration,
-        _transitionBuilder = transitionBuilder,
         super(settings: settings);
 
   final RoutePageBuilder _pageBuilder;
@@ -39,18 +37,18 @@ class MenuPopRoute<T> extends PopupRoute<T> {
   Duration get transitionDuration => _transitionDuration;
   final Duration _transitionDuration;
 
-  final RouteTransitionsBuilder _transitionBuilder;
+  final RouteTransitionsBuilder? transitionBuilder;
 
   @override
-  Widget buildPage(
-      BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+  Widget buildPage(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation) {
     return _pageBuilder(context, animation, secondaryAnimation);
   }
 
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
-    if (_transitionBuilder == null) {
+    if (transitionBuilder == null) {
       return FadeTransition(
           opacity: CurvedAnimation(
             parent: animation,
@@ -58,6 +56,6 @@ class MenuPopRoute<T> extends PopupRoute<T> {
           ),
           child: child);
     } // Some default transition
-    return _transitionBuilder(context, animation, secondaryAnimation, child);
+    return transitionBuilder!(context, animation, secondaryAnimation, child);
   }
 }

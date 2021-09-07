@@ -7,14 +7,14 @@ authors:
   - Ben Hagen <ben@ottomatic.io>
 
 environment:
-  sdk: ">=2.0.0-dev.28.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  open_iconic_flutter: ">=0.3.0 <0.4.0"
-#  video_player: ^0.10.1+6
   video_player:
-    git:
-      url: https://github.com/uquabc/video_player.git
+    path: /Users/cnting/Documents/workspace_flutter/video_player
+#    git:
+#      url: https://github.com/uquabc/video_player.git
+#      ref: 'null-safety'
   flutter:
     sdk: flutter
 

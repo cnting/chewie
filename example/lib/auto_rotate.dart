@@ -24,10 +24,10 @@ class ChewieDemo extends StatefulWidget {
 }
 
 class _ChewieDemoState extends State<ChewieDemo> {
-  TargetPlatform _platform;
-  VideoPlayerController _videoPlayerController1;
-  VideoPlayerController _videoPlayerController2;
-  ChewieController _chewieController;
+  late TargetPlatform _platform;
+  late VideoPlayerController _videoPlayerController1;
+  late VideoPlayerController _videoPlayerController2;
+  late ChewieController _chewieController;
 
   @override
   void initState() {
@@ -45,10 +45,10 @@ class _ChewieDemoState extends State<ChewieDemo> {
             Animation<double> secondAnimation, provider) {
           return AnimatedBuilder(
             animation: animation,
-            builder: (BuildContext context, Widget child) {
+            builder: (BuildContext context, Widget? child) {
               return VideoScaffold(
                 child: Scaffold(
-                  resizeToAvoidBottomPadding: false,
+                  resizeToAvoidBottomInset: false,
                   body: Container(
                     alignment: Alignment.center,
                     color: Colors.black,
@@ -193,7 +193,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
 }
 
 class VideoScaffold extends StatefulWidget {
-  const VideoScaffold({Key key, this.child}) : super(key: key);
+  const VideoScaffold({Key? key, required this.child}) : super(key: key);
 
   final Widget child;
 
@@ -208,7 +208,7 @@ class _VideoScaffoldState extends State<VideoScaffold> {
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
     ]);
-    AutoOrientation.landscapeMode();
+    AutoOrientation.landscapeAutoMode();
     super.initState();
   }
 
@@ -218,7 +218,7 @@ class _VideoScaffoldState extends State<VideoScaffold> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    AutoOrientation.portraitMode();
+    AutoOrientation.portraitAutoMode();
     super.dispose();
   }
 

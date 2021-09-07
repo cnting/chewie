@@ -8,10 +8,11 @@ typedef PressMoreAction = Function(BuildContext context);
 
 ///Created by cnting on 2019-08-09
 class CustomControls extends StatefulWidget {
-  final String videoTitle;
-  final PressMoreAction onPressMoreAction;
+  final String? videoTitle;
+  final PressMoreAction? onPressMoreAction;
 
-  const CustomControls({Key key, this.videoTitle, this.onPressMoreAction}) : super(key: key);
+  const CustomControls({Key? key, this.videoTitle, this.onPressMoreAction})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -20,27 +21,27 @@ class CustomControls extends StatefulWidget {
 }
 
 class _CustomControlsState extends State<CustomControls> {
-  VideoPlayerValue _latestValue;
-  double _latestVolume;
+  VideoPlayerValue? _latestValue;
+  double? _latestVolume;
   bool _hideStuff = true;
-  Timer _hideTimer;
-  Timer _showTimer;
-  Timer _showAfterExpandCollapseTimer;
+  Timer? _hideTimer;
+  Timer? _showTimer;
+  Timer? _showAfterExpandCollapseTimer;
   bool _dragging = false;
 
   final barHeight = 48.0;
   final marginSize = 5.0;
 
-  VideoPlayerController controller;
-  ChewieController chewieController;
+  VideoPlayerController? controller;
+  ChewieController? chewieController;
 
   @override
   Widget build(BuildContext context) {
-    if (_latestValue.hasError) {
-      return chewieController.errorBuilder != null
-          ? chewieController.errorBuilder(
+    if (_latestValue?.hasError == true) {
+      return chewieController?.errorBuilder != null
+          ? chewieController!.errorBuilder!(
               context,
-              chewieController.videoPlayerController.value.errorDescription,
+              chewieController!.videoPlayerController.value.errorDescription,
             )
           : Center(
               child: Icon(
@@ -58,8 +59,10 @@ class _CustomControlsState extends State<CustomControls> {
         child: Column(
           children: <Widget>[
             _buildTopBar(context),
-            _latestValue != null && !_latestValue.isPlaying && _latestValue.duration == null ||
-                    _latestValue.isBuffering
+            _latestValue != null &&
+                        !_latestValue!.isPlaying &&
+                        _latestValue!.duration == null ||
+                    _latestValue!.isBuffering
                 ? const Expanded(
                     child: const Center(
                       child: const CircularProgressIndicator(),
@@ -80,7 +83,7 @@ class _CustomControlsState extends State<CustomControls> {
   }
 
   void _dispose() {
-    controller.removeListener(_updateState);
+    controller?.removeListener(_updateState);
     _hideTimer?.cancel();
     _showTimer?.cancel();
     _showAfterExpandCollapseTimer?.cancel();
@@ -90,7 +93,7 @@ class _CustomControlsState extends State<CustomControls> {
   void didChangeDependencies() {
     final _oldController = chewieController;
     chewieController = ChewieController.of(context);
-    controller = chewieController.videoPlayerController;
+    controller = chewieController?.videoPlayerController;
 
     if (_oldController != chewieController) {
       _dispose();
@@ -110,13 +113,13 @@ class _CustomControlsState extends State<CustomControls> {
         child: Row(
           children: <Widget>[
             Expanded(
-              child: Text(widget.videoTitle),
+              child: Text(widget.videoTitle ?? ""),
             ),
-            if (chewieController.isFullScreen)
+            if (chewieController?.isFullScreen == true)
               IconButton(
                   icon: Icon(Icons.more_vert),
                   onPressed: () {
-                    widget.onPressMoreAction(context);
+                    widget.onPressMoreAction?.call(context);
                   })
           ],
         ),
@@ -127,7 +130,7 @@ class _CustomControlsState extends State<CustomControls> {
   AnimatedOpacity _buildBottomBar(
     BuildContext context,
   ) {
-    final iconColor = Theme.of(context).textTheme.button.color;
+    final iconColor = Theme.of(context).textTheme.button!.color;
 
     return AnimatedOpacity(
       opacity: _hideStuff ? 0.0 : 1.0,
@@ -138,12 +141,18 @@ class _CustomControlsState extends State<CustomControls> {
         child: Row(
           children: <Widget>[
             _buildPlayPause(controller),
-            chewieController.isLive
+            (chewieController?.isLive == true)
                 ? Expanded(child: const Text('LIVE'))
-                : _buildPosition(iconColor),
-            chewieController.isLive ? const SizedBox() : _buildProgressBar(),
-            chewieController.allowMuting ? _buildMuteButton(controller) : Container(),
-            chewieController.allowFullScreen ? _buildExpandButton() : Container(),
+                : _buildPosition(iconColor ?? Colors.grey),
+            (chewieController?.isLive == true)
+                ? const SizedBox()
+                : _buildProgressBar(),
+            (chewieController?.allowMuting == true)
+                ? _buildMuteButton(controller!)
+                : Container(),
+            (chewieController!.allowFullScreen == true)
+                ? _buildExpandButton()
+                : Container(),
           ],
         ),
       ),
@@ -165,7 +174,9 @@ class _CustomControlsState extends State<CustomControls> {
           ),
           child: Center(
             child: Icon(
-              chewieController.isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
+              (chewieController?.isFullScreen==true)
+                  ? Icons.fullscreen_exit
+                  : Icons.fullscreen,
             ),
           ),
         ),
@@ -176,7 +187,7 @@ class _CustomControlsState extends State<CustomControls> {
   Expanded _buildHitArea() {
     return Expanded(
       child: GestureDetector(
-        onTap: _latestValue != null && _latestValue.isPlaying
+        onTap: _latestValue != null && _latestValue!.isPlaying
             ? _cancelAndRestartTimer
             : () {
                 _playPause();
@@ -189,7 +200,10 @@ class _CustomControlsState extends State<CustomControls> {
           color: Colors.transparent,
           child: Center(
             child: AnimatedOpacity(
-              opacity: _latestValue != null && !_latestValue.isPlaying && !_dragging ? 1.0 : 0.0,
+              opacity:
+                  _latestValue != null && !_latestValue!.isPlaying && !_dragging
+                      ? 1.0
+                      : 0.0,
               duration: Duration(milliseconds: 300),
               child: GestureDetector(
                 child: Container(
@@ -217,7 +231,7 @@ class _CustomControlsState extends State<CustomControls> {
       onTap: () {
         _cancelAndRestartTimer();
 
-        if (_latestValue.volume == 0) {
+        if (_latestValue!.volume == 0) {
           controller.setVolume(_latestVolume ?? 0.5);
         } else {
           _latestVolume = controller.value.volume;
@@ -236,7 +250,7 @@ class _CustomControlsState extends State<CustomControls> {
                 right: 8.0,
               ),
               child: Icon(
-                (_latestValue != null && _latestValue.volume > 0)
+                (_latestValue != null && _latestValue!.volume > 0)
                     ? Icons.volume_up
                     : Icons.volume_off,
               ),
@@ -247,7 +261,7 @@ class _CustomControlsState extends State<CustomControls> {
     );
   }
 
-  GestureDetector _buildPlayPause(VideoPlayerController controller) {
+  GestureDetector _buildPlayPause(VideoPlayerController? controller) {
     return GestureDetector(
       onTap: _playPause,
       child: Container(
@@ -259,18 +273,18 @@ class _CustomControlsState extends State<CustomControls> {
           right: 12.0,
         ),
         child: Icon(
-          controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+          controller?.value.isPlaying == true ? Icons.pause : Icons.play_arrow,
         ),
       ),
     );
   }
 
   Widget _buildPosition(Color iconColor) {
-    final position = _latestValue != null && _latestValue.position != null
-        ? _latestValue.position
+    final position = _latestValue != null && _latestValue!.position != null
+        ? _latestValue!.position
         : Duration.zero;
-    final duration = _latestValue != null && _latestValue.duration != null
-        ? _latestValue.duration
+    final duration = _latestValue != null && _latestValue!.duration != null
+        ? _latestValue!.duration!
         : Duration.zero;
 
     return Padding(
@@ -294,11 +308,12 @@ class _CustomControlsState extends State<CustomControls> {
   }
 
   Future<Null> _initialize() async {
-    controller.addListener(_updateState);
+    controller?.addListener(_updateState);
 
     _updateState();
 
-    if ((controller.value != null && controller.value.isPlaying) || chewieController.autoPlay) {
+    if ((controller?.value != null && controller!.value.isPlaying) ||
+        chewieController?.autoPlay==true) {
       _startHideTimer();
     }
 
@@ -313,7 +328,7 @@ class _CustomControlsState extends State<CustomControls> {
     setState(() {
       _hideStuff = true;
 
-      chewieController.toggleFullScreen();
+      chewieController?.toggleFullScreen();
       _showAfterExpandCollapseTimer = Timer(Duration(milliseconds: 300), () {
         setState(() {
           _cancelAndRestartTimer();
@@ -324,19 +339,19 @@ class _CustomControlsState extends State<CustomControls> {
 
   void _playPause() {
     setState(() {
-      if (controller.value.isPlaying) {
+      if (controller?.value.isPlaying==true) {
         _hideStuff = false;
         _hideTimer?.cancel();
-        controller.pause();
+        controller!.pause();
       } else {
         _cancelAndRestartTimer();
 
-        if (!controller.value.initialized) {
-          controller.initialize().then((_) {
-            controller.play();
+        if (controller?.value.initialized!=true) {
+          controller?.initialize().then((_) {
+            controller?.play();
           });
         } else {
-          controller.play();
+          controller?.play();
         }
       }
     });
@@ -352,7 +367,7 @@ class _CustomControlsState extends State<CustomControls> {
 
   void _updateState() {
     setState(() {
-      _latestValue = controller.value;
+      _latestValue = controller?.value;
     });
   }
 
@@ -376,7 +391,7 @@ class _CustomControlsState extends State<CustomControls> {
 
             _startHideTimer();
           },
-          colors: chewieController.materialProgressColors ??
+          colors: chewieController?.materialProgressColors ??
               ChewieProgressColors(
                   playedColor: Theme.of(context).accentColor,
                   handleColor: Theme.of(context).accentColor,

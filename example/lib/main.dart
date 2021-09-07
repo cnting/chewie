@@ -8,7 +8,7 @@ import 'custom_controls.dart';
 import 'package:flutter/services.dart';
 
 Future main() async {
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  // await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
     ChewieDemo(),
   );
@@ -26,10 +26,10 @@ class ChewieDemo extends StatefulWidget {
 }
 
 class _ChewieDemoState extends State<ChewieDemo> {
-  TargetPlatform _platform;
-  VideoPlayerController _videoPlayerController1;
-  VideoPlayerController _videoPlayerController2;
-  ChewieController _chewieController;
+  TargetPlatform? _platform;
+  late VideoPlayerController _videoPlayerController1;
+  late VideoPlayerController _videoPlayerController2;
+  late ChewieController _chewieController;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   @override
